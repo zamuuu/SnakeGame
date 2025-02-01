@@ -37,22 +37,50 @@ class Snake:
         self.head.y += self.ydir * BLOCK_SIZE
         self.body.remove(self.head)
 
+
+
 # Creating grid of the map
 def snake_map():
     for x in range(0, SW, BLOCK_SIZE):
         for y in range(0, SH, BLOCK_SIZE):
             rect = pygame.Rect(x, y, BLOCK_SIZE, BLOCK_SIZE)
             pygame.draw.rect(screen, "#3c3c3b", rect, 1)
+
+# Initialize map Grid and Snake
 snake_map()
-
-
 snake = Snake()
+
+
 
 while running:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             running = False
-    
+        if event.type == pygame.KEYDOWN:
+            if event.key in {pygame.K_DOWN, pygame.K_s}:
+                if snake.ydir == -1:
+                    pass
+                else:
+                    snake.xdir, snake.ydir = 0, 1
+            elif event.key in {pygame.K_LEFT, pygame.K_a}:
+                if snake.xdir == 1:
+                    pass
+                else:
+                    snake.xdir, snake.ydir = -1, 0
+            elif event.key in {pygame.K_UP, pygame.K_w}:
+                if snake.ydir == 1:
+                    pass
+                else:
+                    snake.xdir, snake.ydir = 0, -1
+            elif event.key in {pygame.K_RIGHT, pygame.K_d}:
+                if snake.xdir == -1:
+                    pass
+                else:
+                    snake.xdir, snake.ydir = 1, 0
+                
+                
+    screen.fill("black")
+    snake_map()
     snake.update()
     
     pygame.draw.rect(screen, "blue", snake.head)    
@@ -60,7 +88,7 @@ while running:
         pygame.draw.rect(screen, "green", square)
     
     pygame.display.update()
-    clock.tick(10)
+    clock.tick(5)
     
 
 pygame.quit()
