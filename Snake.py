@@ -1,5 +1,5 @@
 import pygame
-
+from random import randint
 # Essentials
 pygame.init()
 pygame.display.set_caption("Snake Game")
@@ -27,6 +27,14 @@ class Snake:
         self.dead = False
 
     def update(self):
+        
+        for square in self.body:
+            if (self.head.x, self.head.y) == (square.x, square.y):
+                self.dead = True
+            if self.head.x is not in range(0, SW) or self.head.y is not in range(0, SH):
+                self.dead = True
+        
+                
         self.body.append(self.head)
         for i in range(len(self.body)-1):
             # Move each body rect to the the position of the next one
@@ -37,8 +45,16 @@ class Snake:
         self.head.y += self.ydir * BLOCK_SIZE
         self.body.remove(self.head)
 
+class Apple:
+    def __init__(self):
+        self.x = int(randint(0, SW)/BLOCK_SIZE) * BLOCK_SIZE 
+        self.y = int(randint(0, SH)/BLOCK_SIZE) * BLOCK_SIZE
+        self.rect = pygame.Rect(self.x, self.y, BLOCK_SIZE, BLOCK_SIZE)
 
-
+    def update(self):
+        pygame.draw.rect(screen, "#ff0000", self.rect)
+    
+    
 # Creating grid of the map
 def snake_map():
     for x in range(0, SW, BLOCK_SIZE):
@@ -46,16 +62,17 @@ def snake_map():
             rect = pygame.Rect(x, y, BLOCK_SIZE, BLOCK_SIZE)
             pygame.draw.rect(screen, "#3c3c3b", rect, 1)
 
-# Initialize map Grid and Snake
+# Initialize map Grid, Snake and Apple
 snake_map()
 snake = Snake()
-
+apple = Apple()
 
 
 while running:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             running = False
+        # Movement with Arrows and a,w,s,d keys.
         if event.type == pygame.KEYDOWN:
             if event.key in {pygame.K_DOWN, pygame.K_s}:
                 if snake.ydir == -1:
@@ -77,18 +94,24 @@ while running:
                     pass
                 else:
                     snake.xdir, snake.ydir = 1, 0
-                
-                
+    
+    
     screen.fill("black")
     snake_map()
     snake.update()
+    apple.update()
+      
     
-    pygame.draw.rect(screen, "blue", snake.head)    
+    
+    pygame.draw.rect(screen, "#19960e", snake.head)    
     for square in snake.body:
-        pygame.draw.rect(screen, "green", square)
+        pygame.draw.rect(screen, "#3cd02f", square)    
+    
+    if (snake.head.x, snake.head.y) == (apple.x, apple.y):
+        snake.body.append(pygame.Rect(snake.head.x, snake.head.y, BLOCK_SIZE, BLOCK_SIZE))
+        apple = Apple()
     
     pygame.display.update()
-    clock.tick(5)
-    
+    clock.tick(10)
 
 pygame.quit()
