@@ -27,14 +27,27 @@ class Snake:
         self.dead = False
 
     def update(self):
-        
+        global apple
         for square in self.body:
             if (self.head.x, self.head.y) == (square.x, square.y):
                 self.dead = True
-            if self.head.x is not in range(0, SW) or self.head.y is not in range(0, SH):
+            if self.head.x not in range(0, SW) or self.head.y not in range(0, SH):
                 self.dead = True
         
-                
+        
+        if self.dead:
+            self.x = BLOCK_SIZE
+            self.y = BLOCK_SIZE
+            self.head = pygame.Rect(self.x, self.y, BLOCK_SIZE, BLOCK_SIZE)
+            self.body = [pygame.Rect(self.x-BLOCK_SIZE, self.y, BLOCK_SIZE, BLOCK_SIZE)]
+            self.xdir = 1
+            self.ydir = 0
+            self.dead = False
+            apple = Apple()
+            
+            
+            
+            
         self.body.append(self.head)
         for i in range(len(self.body)-1):
             # Move each body rect to the the position of the next one
@@ -108,7 +121,7 @@ while running:
         pygame.draw.rect(screen, "#3cd02f", square)    
     
     if (snake.head.x, snake.head.y) == (apple.x, apple.y):
-        snake.body.append(pygame.Rect(snake.head.x, snake.head.y, BLOCK_SIZE, BLOCK_SIZE))
+        snake.body.append(pygame.Rect(square.x, square.y, BLOCK_SIZE, BLOCK_SIZE))
         apple = Apple()
     
     pygame.display.update()
