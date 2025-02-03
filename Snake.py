@@ -11,6 +11,7 @@ screen = pygame.display.set_mode(size)
 FONT = pygame.font.SysFont("Arial", 50)
 BLOCK_SIZE = 50
 main_menu_BG = pygame.image.load('imgs/Background.png')
+# game_BG = pygame.image.load("#")
 clock = pygame.time.Clock()
 
 # Creating the Snake Object
@@ -80,14 +81,17 @@ def main_menu():
     pygame.display.set_caption("Main Menu")
     click = False
     while True:
-        screen.fill((255,255,255))
         # Main menu Background image
         screen.blit(main_menu_BG, (0,0))
         
         mousex, mousey = pygame.mouse.get_pos()
         # Button to enter the game
-        game_button = pygame.Rect(SW/2, SH/2, 200, 100)
+        game_button = pygame.Rect(0, 0, 400, 100)
+        # Centering the Play button
+        game_button.center = (SW // 2, SH // 2)
+        #game_button = game_button.center
         if game_button.collidepoint(mousex,mousey):
+            
             if click:
                 game()
                 
@@ -160,16 +164,16 @@ def game():
 
 
 
-        pygame.draw.rect(screen, "#19960e", snake.head)    
+        pygame.draw.rect(screen, "#2461ff", snake.head)    
         for square in snake.body:
-            pygame.draw.rect(screen, "#3cd02f", square)    
+            pygame.draw.rect(screen, "#4775eb", square)    
 
         if (snake.head.x, snake.head.y) == (apple.x, apple.y):
             snake.body.append(pygame.Rect(square.x, square.y, BLOCK_SIZE, BLOCK_SIZE))
             apple = Apple()
 
         pygame.display.update()
-        clock.tick(20)
+        clock.tick(10)
 
 main_menu()
 pygame.quit()
