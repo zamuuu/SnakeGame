@@ -10,7 +10,7 @@ screen = pygame.display.set_mode(size)
 # Variables
 FONT = pygame.font.SysFont("Arial", 50)
 BLOCK_SIZE = 50
-
+main_menu_BG = pygame.image.load('imgs/Background.png')
 clock = pygame.time.Clock()
 
 # Creating the Snake Object
@@ -81,6 +81,8 @@ def main_menu():
     click = False
     while True:
         screen.fill((255,255,255))
+        # Main menu Background image
+        screen.blit(main_menu_BG, (0,0))
         
         mousex, mousey = pygame.mouse.get_pos()
         # Button to enter the game
@@ -120,11 +122,12 @@ def game():
     while running:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
-               game_running = False
+               running = False
                sys.exit()
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_ESCAPE:
                     running = False
+                    main_menu()
                     
             # Movement with Arrows and a,w,s,d keys.
             if event.type == pygame.KEYDOWN:
