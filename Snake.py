@@ -12,7 +12,6 @@ FONT = pygame.font.SysFont("Arial", 50)
 BLOCK_SIZE = 50
 
 clock = pygame.time.Clock()
-click = False
 
 # Creating the Snake Object
 class Snake:
@@ -79,7 +78,7 @@ def snake_map():
 
 def main_menu():
     pygame.display.set_caption("Main Menu")
-    
+    click = False
     while True:
         screen.fill((255,255,255))
         
@@ -87,8 +86,10 @@ def main_menu():
         # Button to enter the game
         game_button = pygame.Rect(SW/2, SH/2, 200, 100)
         if game_button.collidepoint(mousex,mousey):
-            pass       
-        pygame.draw.rect(screen, (255,255,255), game_button)
+            if click:
+                game()
+                
+        pygame.draw.rect(screen, (255,0,255), game_button)
         
         click = False
         for event in pygame.event.get():
@@ -99,25 +100,32 @@ def main_menu():
                 if event.key == pygame.K_ESCAPE:
                     pygame.quit()
                     sys.exit()
-            if event.type() == pygame.MOUSEBUTTONDOWN:
+            if event.type == pygame.MOUSEBUTTONDOWN:
                 if event.button == 1:
                     click = True
-                
+        pygame.display.update()
+        clock.tick(20)
                 
 
 
 
 def game():
-    game_running = True
+    pygame.display.set_caption("Snake!")
+    running = True
     # Initialize map Grid, Snake and Apple
     snake_map()
     snake = Snake()
     apple = Apple()
     
-    while game_running:
+    while running:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                game_running = False
+               sys.exit()
+            if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_ESCAPE:
+                    running = False
+                    
             # Movement with Arrows and a,w,s,d keys.
             if event.type == pygame.KEYDOWN:
                 if event.key in {pygame.K_DOWN, pygame.K_s}:
@@ -160,5 +168,5 @@ def game():
         pygame.display.update()
         clock.tick(20)
 
-game()
+main_menu()
 pygame.quit()
