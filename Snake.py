@@ -1,5 +1,6 @@
 import pygame
 from random import randint
+import sys
 # Essentials
 pygame.init()
 pygame.display.set_caption("Snake Game")
@@ -7,11 +8,11 @@ size = SW, SH = 800, 600
 screen = pygame.display.set_mode(size)
 
 # Variables
+FONT = pygame.font.SysFont("Arial", 50)
 BLOCK_SIZE = 50
-running = True
 
 clock = pygame.time.Clock()
-
+click = False
 
 # Creating the Snake Object
 class Snake:
@@ -58,6 +59,7 @@ class Snake:
         self.head.y += self.ydir * BLOCK_SIZE
         self.body.remove(self.head)
 
+# Creating the Apple Object
 class Apple:
     def __init__(self):
         self.x = int(randint(0, SW)/BLOCK_SIZE) * BLOCK_SIZE 
@@ -66,8 +68,7 @@ class Apple:
 
     def update(self):
         pygame.draw.rect(screen, "#ff0000", self.rect)
-    
-    
+
 # Creating grid of the map
 def snake_map():
     for x in range(0, SW, BLOCK_SIZE):
@@ -75,56 +76,89 @@ def snake_map():
             rect = pygame.Rect(x, y, BLOCK_SIZE, BLOCK_SIZE)
             pygame.draw.rect(screen, "#3c3c3b", rect, 1)
 
-# Initialize map Grid, Snake and Apple
-snake_map()
-snake = Snake()
-apple = Apple()
+
+def main_menu():
+    pygame.display.set_caption("Main Menu")
+    
+    while True:
+        screen.fill((255,255,255))
+        
+        mousex, mousey = pygame.mouse.get_pos()
+        # Button to enter the game
+        game_button = pygame.Rect(SW/2, SH/2, 200, 100)
+        if game_button.collidepoint(mousex,mousey):
+            pass       
+        pygame.draw.rect(screen, (255,255,255), game_button)
+        
+        click = False
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                pygame.quit()
+                sys.exit()
+            if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_ESCAPE:
+                    pygame.quit()
+                    sys.exit()
+            if event.type() == pygame.MOUSEBUTTONDOWN:
+                if event.button == 1:
+                    click = True
+                
+                
 
 
-while running:
-    for event in pygame.event.get():
-        if event.type == pygame.QUIT:
-            running = False
-        # Movement with Arrows and a,w,s,d keys.
-        if event.type == pygame.KEYDOWN:
-            if event.key in {pygame.K_DOWN, pygame.K_s}:
-                if snake.ydir == -1:
-                    pass
-                else:
-                    snake.xdir, snake.ydir = 0, 1
-            elif event.key in {pygame.K_LEFT, pygame.K_a}:
-                if snake.xdir == 1:
-                    pass
-                else:
-                    snake.xdir, snake.ydir = -1, 0
-            elif event.key in {pygame.K_UP, pygame.K_w}:
-                if snake.ydir == 1:
-                    pass
-                else:
-                    snake.xdir, snake.ydir = 0, -1
-            elif event.key in {pygame.K_RIGHT, pygame.K_d}:
-                if snake.xdir == -1:
-                    pass
-                else:
-                    snake.xdir, snake.ydir = 1, 0
-    
-    
-    screen.fill("black")
+
+def game():
+    game_running = True
+    # Initialize map Grid, Snake and Apple
     snake_map()
-    snake.update()
-    apple.update()
-      
+    snake = Snake()
+    apple = Apple()
     
-    
-    pygame.draw.rect(screen, "#19960e", snake.head)    
-    for square in snake.body:
-        pygame.draw.rect(screen, "#3cd02f", square)    
-    
-    if (snake.head.x, snake.head.y) == (apple.x, apple.y):
-        snake.body.append(pygame.Rect(square.x, square.y, BLOCK_SIZE, BLOCK_SIZE))
-        apple = Apple()
-    
-    pygame.display.update()
-    clock.tick(10)
+    while game_running:
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+               game_running = False
+            # Movement with Arrows and a,w,s,d keys.
+            if event.type == pygame.KEYDOWN:
+                if event.key in {pygame.K_DOWN, pygame.K_s}:
+                    if snake.ydir == -1:
+                        pass
+                    else:
+                        snake.xdir, snake.ydir = 0, 1
+                elif event.key in {pygame.K_LEFT, pygame.K_a}:
+                    if snake.xdir == 1:
+                        pass
+                    else:
+                        snake.xdir, snake.ydir = -1, 0
+                elif event.key in {pygame.K_UP, pygame.K_w}:
+                    if snake.ydir == 1:
+                        pass
+                    else:
+                        snake.xdir, snake.ydir = 0, -1
+                elif event.key in {pygame.K_RIGHT, pygame.K_d}:
+                    if snake.xdir == -1:
+                        pass
+                    else:
+                        snake.xdir, snake.ydir = 1, 0
 
+
+        screen.fill("black")
+        snake_map()
+        snake.update()
+        apple.update()
+
+
+
+        pygame.draw.rect(screen, "#19960e", snake.head)    
+        for square in snake.body:
+            pygame.draw.rect(screen, "#3cd02f", square)    
+
+        if (snake.head.x, snake.head.y) == (apple.x, apple.y):
+            snake.body.append(pygame.Rect(square.x, square.y, BLOCK_SIZE, BLOCK_SIZE))
+            apple = Apple()
+
+        pygame.display.update()
+        clock.tick(20)
+
+game()
 pygame.quit()
