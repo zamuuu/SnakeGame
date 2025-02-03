@@ -10,8 +10,8 @@ screen = pygame.display.set_mode(size)
 # Variables
 FONT = pygame.font.SysFont("Arial", 50)
 BLOCK_SIZE = 50
-main_menu_BG = pygame.image.load('imgs/Background.png')
-# game_BG = pygame.image.load("#")
+main_menu_BG = pygame.image.load('imgs/main_menu_background.png')
+game_BG = pygame.image.load("imgs/game_background.jpg")
 clock = pygame.time.Clock()
 
 # Creating the Snake Object
@@ -69,13 +69,6 @@ class Apple:
     def update(self):
         pygame.draw.rect(screen, "#ff0000", self.rect)
 
-# Creating grid of the map
-def snake_map():
-    for x in range(0, SW, BLOCK_SIZE):
-        for y in range(0, SH, BLOCK_SIZE):
-            rect = pygame.Rect(x, y, BLOCK_SIZE, BLOCK_SIZE)
-            pygame.draw.rect(screen, "#3c3c3b", rect, 1)
-
 
 def main_menu():
     pygame.display.set_caption("Main Menu")
@@ -119,7 +112,6 @@ def game():
     pygame.display.set_caption("Snake!")
     running = True
     # Initialize map Grid, Snake and Apple
-    snake_map()
     snake = Snake()
     apple = Apple()
     
@@ -156,9 +148,7 @@ def game():
                     else:
                         snake.xdir, snake.ydir = 1, 0
 
-
-        screen.fill("black")
-        snake_map()
+        screen.blit(game_BG, (0,0))
         snake.update()
         apple.update()
 
