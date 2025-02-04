@@ -101,7 +101,7 @@ def main_menu():
         if play_main_menu_rect.collidepoint(mousex, mousey) and click:
             game(selected_difficulty)
         elif easy_dificulty_r.collidepoint(mousex, mousey) and click:
-            selected_difficulty = 5
+            selected_difficulty = 6
         elif normal_dificulty_r.collidepoint(mousex, mousey) and click:
             selected_difficulty = 10
         elif hard_dificulty_r.collidepoint(mousex, mousey) and click:
