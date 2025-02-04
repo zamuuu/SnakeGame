@@ -6,14 +6,17 @@ pygame.init()
 pygame.display.set_caption("Snake Game")
 size = SW, SH = 800, 600
 screen = pygame.display.set_mode(size)
-
 # Variables
 FONT = pygame.font.SysFont("Arial", 50)
 BLOCK_SIZE = 50
-main_menu_BG = pygame.image.load('imgs/main_menu_background.png')
-game_BG = pygame.image.load("imgs/game_background.jpg")
 clock = pygame.time.Clock()
-
+# Imgages
+main_menu_BG = pygame.image.load('imgs/main_menu_background.png').convert_alpha()
+game_BG = pygame.image.load("imgs/game_background.jpg").convert_alpha()
+play_main_menu = pygame.image.load("imgs/play_button.png").convert_alpha()
+easy_dificulty = pygame.image.load("imgs/turtle.png").convert_alpha()
+normal_dificulty = pygame.image.load("imgs/rabbit.png").convert_alpha()
+hard_dificulty = pygame.image.load("imgs/snake.png").convert_alpha()
 # Creating the Snake Object
 class Snake:
     def __init__(self):
@@ -76,21 +79,33 @@ def main_menu():
     while True:
         # Main menu Background image
         screen.blit(main_menu_BG, (0,0))
-        
         mousex, mousey = pygame.mouse.get_pos()
         # Button to enter the game
-        game_button = pygame.Rect(0, 0, 400, 100)
-        # Centering the Play button
-        game_button.center = (SW // 2, SH // 2)
-        #game_button = game_button.center
-        if game_button.collidepoint(mousex,mousey):
-            
+        
+        # Play button
+        play_main_menu_rect = play_main_menu.get_rect()
+        play_main_menu_rect.center = (SW // 2, SH // 2)
+        
+        # Difficulty buttons
+        easy_dificulty_r = easy_dificulty.get_rect()
+        normal_dificulty_r = normal_dificulty.get_rect()
+        hard_dificulty_r = hard_dificulty.get_rect()
+        
+        if play_main_menu_rect.collidepoint(mousex,mousey):
             if click:
                 game()
-                
-        pygame.draw.rect(screen, (255,0,255), game_button)
-        
+        # elif easy_dificulty_r.collidepoint(mousex, mousey):
+            
+        # elif normal_dificulty_r.collidepoint(mousex, mousey):
+            
+        # elif hard_dificulty_r.collidepoint(mousex, mousey):
+            
+        screen.blit(play_main_menu, play_main_menu_rect)
+        screen.blit(easy_dificulty, (200, 350))
+        screen.blit(normal_dificulty, (350, 350))
+        screen.blit(hard_dificulty, (500, 350))
         click = False
+
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 pygame.quit()
@@ -103,7 +118,8 @@ def main_menu():
                 if event.button == 1:
                     click = True
         pygame.display.update()
-        clock.tick(20)
+        
+        clock.tick(60)
                 
 
 
@@ -161,6 +177,7 @@ def game():
         if (snake.head.x, snake.head.y) == (apple.x, apple.y):
             snake.body.append(pygame.Rect(square.x, square.y, BLOCK_SIZE, BLOCK_SIZE))
             apple = Apple()
+            apple.update()
 
         pygame.display.update()
         clock.tick(10)
