@@ -14,9 +14,9 @@ clock = pygame.time.Clock()
 main_menu_BG = pygame.image.load('imgs/main_menu_background.png').convert_alpha()
 game_BG = pygame.image.load("imgs/game_background.jpg").convert_alpha()
 play_main_menu = pygame.image.load("imgs/play_button.png").convert_alpha()
-easy_dificulty = pygame.image.load("imgs/turtle.png").convert_alpha()
-normal_dificulty = pygame.image.load("imgs/rabbit.png").convert_alpha()
-hard_dificulty = pygame.image.load("imgs/snake.png").convert_alpha()
+easy_difficulty = pygame.image.load("imgs/turtle.png").convert_alpha()
+normal_difficulty = pygame.image.load("imgs/rabbit.png").convert_alpha()
+hard_difficulty = pygame.image.load("imgs/snake.png").convert_alpha()
 # Creating the Snake Object
 class Snake:
     def __init__(self):
@@ -65,8 +65,8 @@ class Snake:
 # Creating the Apple Object
 class Apple:
     def __init__(self):
-        self.x = int(randint(0, SW)/BLOCK_SIZE) * BLOCK_SIZE 
-        self.y = int(randint(0, SH)/BLOCK_SIZE) * BLOCK_SIZE
+        self.x = randint(0, (SW // BLOCK_SIZE) - 1) * BLOCK_SIZE
+        self.y = randint(0, SH)// BLOCK_SIZE * BLOCK_SIZE
         self.rect = pygame.Rect(self.x, self.y, BLOCK_SIZE, BLOCK_SIZE)
 
     def update(self):
@@ -76,6 +76,7 @@ class Apple:
 def main_menu():
     pygame.display.set_caption("Main Menu")
     click = False
+    click_difficulty = False
     while True:
         # Main menu Background image
         screen.blit(main_menu_BG, (0,0))
@@ -87,23 +88,26 @@ def main_menu():
         play_main_menu_rect.center = (SW // 2, SH // 2)
         
         # Difficulty buttons
-        easy_dificulty_r = easy_dificulty.get_rect()
-        normal_dificulty_r = normal_dificulty.get_rect()
-        hard_dificulty_r = hard_dificulty.get_rect()
+        easy_dificulty_r = easy_difficulty.get_rect()
+        normal_dificulty_r = normal_difficulty.get_rect()
+        hard_dificulty_r = hard_difficulty.get_rect()
         
-        if play_main_menu_rect.collidepoint(mousex,mousey):
+        if play_main_menu_rect.collidepoint(mousex, mousey):
             if click:
-                game()
-        # elif easy_dificulty_r.collidepoint(mousex, mousey):
-            
-        # elif normal_dificulty_r.collidepoint(mousex, mousey):
-            
-        # elif hard_dificulty_r.collidepoint(mousex, mousey):
-            
+                game(10)
+        elif easy_dificulty_r.collidepoint(mousex, mousey):
+            if click_difficulty:
+                game(5)
+        elif normal_dificulty_r.collidepoint(mousex, mousey):
+            if click_difficulty:
+                game(10)
+        elif hard_dificulty_r.collidepoint(mousex, mousey):
+            if click_difficulty:
+                game(20)
         screen.blit(play_main_menu, play_main_menu_rect)
-        screen.blit(easy_dificulty, (200, 350))
-        screen.blit(normal_dificulty, (350, 350))
-        screen.blit(hard_dificulty, (500, 350))
+        screen.blit(easy_difficulty, (200, 350))
+        screen.blit(normal_difficulty, (350, 350))
+        screen.blit(hard_difficulty, (500, 350))
         click = False
 
         for event in pygame.event.get():
@@ -117,6 +121,10 @@ def main_menu():
             if event.type == pygame.MOUSEBUTTONDOWN:
                 if event.button == 1:
                     click = True
+            if event.type == pygame.MOUSEBUTTONDOWN:
+                if event.button == 1:
+                    click_difficulty = True
+                    
         pygame.display.update()
         
         clock.tick(60)
@@ -124,7 +132,7 @@ def main_menu():
 
 
 
-def game():
+def game(difficulty):
     pygame.display.set_caption("Snake!")
     running = True
     # Initialize map Grid, Snake and Apple
@@ -180,7 +188,7 @@ def game():
             apple.update()
 
         pygame.display.update()
-        clock.tick(10)
+        clock.tick(difficulty)
 
 main_menu()
 pygame.quit()
