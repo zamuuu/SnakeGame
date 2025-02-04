@@ -66,7 +66,7 @@ class Snake:
 class Apple:
     def __init__(self):
         self.x = randint(0, (SW // BLOCK_SIZE) - 1) * BLOCK_SIZE
-        self.y = randint(0, SH)// BLOCK_SIZE * BLOCK_SIZE
+        self.y = randint(0, (SH // BLOCK_SIZE) - 1) * BLOCK_SIZE
         self.rect = pygame.Rect(self.x, self.y, BLOCK_SIZE, BLOCK_SIZE)
 
     def update(self):
@@ -74,6 +74,7 @@ class Apple:
 
 
 def main_menu():
+    selected_difficulty = 10  # Valor por defecto
     pygame.display.set_caption("Main Menu")
     click = False
     click_difficulty = False
@@ -87,23 +88,25 @@ def main_menu():
         play_main_menu_rect = play_main_menu.get_rect()
         play_main_menu_rect.center = (SW // 2, SH // 2)
         
-        # Difficulty buttons
+        # Difficulty Rect buttons
         easy_dificulty_r = easy_difficulty.get_rect()
         normal_dificulty_r = normal_difficulty.get_rect()
         hard_dificulty_r = hard_difficulty.get_rect()
+        # Positioning those bottons
+        easy_dificulty_r.topleft = (200, 350)
+        normal_dificulty_r.topleft = (350, 350)
+        hard_dificulty_r.topleft = (500, 350)
         
-        if play_main_menu_rect.collidepoint(mousex, mousey):
-            if click:
-                game(10)
-        elif easy_dificulty_r.collidepoint(mousex, mousey):
-            if click_difficulty:
-                game(5)
-        elif normal_dificulty_r.collidepoint(mousex, mousey):
-            if click_difficulty:
-                game(10)
-        elif hard_dificulty_r.collidepoint(mousex, mousey):
-            if click_difficulty:
-                game(20)
+        
+        if play_main_menu_rect.collidepoint(mousex, mousey) and click:
+            game(selected_difficulty)
+        elif easy_dificulty_r.collidepoint(mousex, mousey) and click:
+            selected_difficulty = 5
+        elif normal_dificulty_r.collidepoint(mousex, mousey) and click:
+            selected_difficulty = 10
+        elif hard_dificulty_r.collidepoint(mousex, mousey) and click:
+            selected_difficulty = 20
+
         screen.blit(play_main_menu, play_main_menu_rect)
         screen.blit(easy_difficulty, (200, 350))
         screen.blit(normal_difficulty, (350, 350))
@@ -121,9 +124,6 @@ def main_menu():
             if event.type == pygame.MOUSEBUTTONDOWN:
                 if event.button == 1:
                     click = True
-            if event.type == pygame.MOUSEBUTTONDOWN:
-                if event.button == 1:
-                    click_difficulty = True
                     
         pygame.display.update()
         
@@ -132,7 +132,7 @@ def main_menu():
 
 
 
-def game(difficulty):
+def game(selected_difficulty):
     pygame.display.set_caption("Snake!")
     running = True
     # Initialize map Grid, Snake and Apple
@@ -188,7 +188,7 @@ def game(difficulty):
             apple.update()
 
         pygame.display.update()
-        clock.tick(difficulty)
+        clock.tick(selected_difficulty)
 
 main_menu()
 pygame.quit()
