@@ -1,19 +1,23 @@
 import pygame
 from random import randint
 import sys
+
 # Essentials
 pygame.init()
 pygame.display.set_caption("Snake Game")
 size = SW, SH = 800, 600
 screen = pygame.display.set_mode(size)
+
 # Variables
 FONT = pygame.font.SysFont("Arial", 50)
 BLOCK_SIZE = 50
 clock = pygame.time.Clock()
+
 # Imgages
 main_menu_BG = pygame.image.load('imgs/main_menu_background.png').convert_alpha()
 game_BG = pygame.image.load("imgs/game_background.jpg").convert_alpha()
 play_main_menu = pygame.image.load("imgs/play_button.png").convert_alpha()
+
 # Change difficulty images
 easy_difficulty = pygame.image.load("imgs/turtle.png").convert_alpha()
 normal_difficulty = pygame.image.load("imgs/rabbit.png").convert_alpha()
@@ -22,6 +26,11 @@ clicked_easy_diff = pygame.image.load("imgs/turtle_clicked.png").convert_alpha()
 clicked_normal_diff = pygame.image.load("imgs/rabbit_clicked.png").convert_alpha()
 clicked_hard_diff = pygame.image.load("imgs/snake_clicked.png").convert_alpha()
 temp_blank = pygame.image.load("imgs/blank_temporary.png").convert_alpha()
+
+# Apple collide
+apple_sound = pygame.mixer.Sound("sounds/pickup_coin.wav")
+play_sound = pygame.mixer.Sound("sounds/play_button.wav")
+play_sound.set_volume(0.2)
 # Creating the Snake Object
 class Snake:
     def __init__(self):
@@ -79,6 +88,10 @@ class Apple:
 
 
 def main_menu():
+    pygame.mixer.music.load("sounds/main_menu.wav")
+    pygame.mixer.music.play(-1, 0.0)
+    pygame.mixer.music.set_volume(0.05)
+    
     selected_difficulty = 10  # Valor por defecto
     pygame.display.set_caption("Main Menu")
     click = False
@@ -112,6 +125,10 @@ def main_menu():
         
         
         if play_main_menu_rect.collidepoint(mousex, mousey) and click:
+            play_sound.play()
+            pygame.mixer.music.play(-1, 0.0)
+            
+            pygame.mixer.music.stop()
             game(selected_difficulty)
         elif easy_dificulty_r.collidepoint(mousex, mousey) and click:
             selected_difficulty = 6
@@ -149,6 +166,10 @@ def main_menu():
 
 
 def game(selected_difficulty):
+    pygame.mixer.music.load("sounds/game_music.mp3")
+    pygame.mixer.music.play(-1, 0.0)
+    pygame.mixer.music.set_volume(0.05)
+    
     pygame.display.set_caption("Snake!")
     running = True
     # Initialize map Grid, Snake and Apple
@@ -163,6 +184,7 @@ def game(selected_difficulty):
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_ESCAPE:
                     running = False
+                    pygame.mixer.music.play()
                     main_menu()
                     
             # Movement with Arrows and a,w,s,d keys.
@@ -196,9 +218,10 @@ def game(selected_difficulty):
 
         pygame.draw.rect(screen, "#2461ff", snake.head)    
         for square in snake.body:
-            pygame.draw.rect(screen, "#4775eb", square)    
+            pygame.draw.rect(screen, "#4775eb", square)
 
         if (snake.head.x, snake.head.y) == (apple.x, apple.y):
+            apple_sound.play()
             snake.body.append(pygame.Rect(square.x, square.y, BLOCK_SIZE, BLOCK_SIZE))
             apple = Apple()
             apple.update()
