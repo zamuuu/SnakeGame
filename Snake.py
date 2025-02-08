@@ -27,10 +27,14 @@ clicked_normal_diff = pygame.image.load("imgs/rabbit_clicked.png").convert_alpha
 clicked_hard_diff = pygame.image.load("imgs/snake_clicked.png").convert_alpha()
 temp_blank = pygame.image.load("imgs/blank_temporary.png").convert_alpha()
 
-# Apple collide
+# Eaten Apple Sound
 apple_sound = pygame.mixer.Sound("sounds/pickup_coin.wav")
 play_sound = pygame.mixer.Sound("sounds/play_button.wav")
-play_sound.set_volume(0.2)
+play_sound.set_volume(0.00001)
+
+# Game over sound
+game_over_sound = pygame.mixer.Sound("sounds/game_over.wav")
+game_over_sound.set_volume(0.2)
 # Creating the Snake Object
 class Snake:
     def __init__(self):
@@ -48,10 +52,12 @@ class Snake:
         global apple
         for square in self.body:
             if (self.head.x, self.head.y) == (square.x, square.y):
+                game_over_sound.play()
                 self.dead = True
+                
             if self.head.x not in range(0, SW) or self.head.y not in range(0, SH):
+                game_over_sound.play()
                 self.dead = True
-        
         
         if self.dead:
             self.x = BLOCK_SIZE
